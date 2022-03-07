@@ -3,39 +3,53 @@ const computerPlay = () => {
   return options[Math.floor(Math.random() * options.length)]
 }
 
-const sanitizeSelection = (playerSelection) => {
-  const selectionLowerCase = playerSelection.toLowerCase()
-  return `${selectionLowerCase
-    .charAt(0)
-    .toUpperCase()}${selectionLowerCase.slice(1)}`
-}
+const playRound = (playerSelection) => {
+  const computerSelection = computerPlay()
 
-const playRound = (playerSelection, computerSelection) => {
-  const sanitizedPlayerSelection = sanitizeSelection(playerSelection)
+  if (playerSelection === computerSelection) return 'draw'
 
-  if (sanitizedPlayerSelection === computerSelection) return "It's a Draw!"
-
-  if (sanitizedPlayerSelection === 'Rock') {
-    return computerSelection === 'Paper'
-      ? 'You Lose! Paper beats Rock'
-      : 'You Win! Rock beats Scissors'
+  if (playerSelection === 'Rock') {
+    return computerSelection === 'Paper' ? 'computer' : 'player'
   }
 
-  if (sanitizedPlayerSelection === 'Paper') {
-    return computerSelection === 'Scissors'
-      ? 'You Lose! Scissors beats Paper'
-      : 'You Win! Paper beats Rock'
+  if (playerSelection === 'Paper') {
+    return computerSelection === 'Scissors' ? 'computer' : 'player'
   }
 
-  if (sanitizedPlayerSelection === 'Scissors') {
-    return computerSelection === 'Rock'
-      ? 'You Lose! Rock beats Scissors'
-      : 'You Win! Scissors beats Paper'
+  if (playerSelection === 'Scissors') {
+    return computerSelection === 'Rock' ? 'computer' : 'player'
   }
 }
 
-const playerSelection = 'RoCk'
-const computerSelection = computerPlay()
-console.log('Computer:', computerSelection)
+const game = () => {
+  let playerScore = 0
+  let computerScore = 0
 
-console.log(playRound(playerSelection, computerSelection))
+  const displayPlayerScore = document.querySelector('.player')
+  displayPlayerScore.textContent = playerScore
+
+  const displayComputerScore = document.querySelector('.computer')
+  displayComputerScore.textContent = computerScore
+
+  const announce = document.querySelector('.announce')
+  const btns = document.querySelectorAll('button')
+
+  btns.forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const winner = playRound(btn.id)
+      if (winner === 'player') {
+        playerScore = ++playerScore
+      }
+      if (winner === 'computer') {
+        computerScore = ++computerScore
+      }
+
+      displayPlayerScore.textContent = playerScore
+      displayComputerScore.textContent = computerScore
+      if (playerScore >= 5) announce.textContent = 'Player wins the game'
+      if (computerScore >= 5) announce.textContent = 'Computer wins the game'
+    })
+  })
+}
+
+game()
